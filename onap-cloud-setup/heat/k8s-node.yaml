@@ -1,0 +1,76 @@
+heat_template_version: 2015-10-15
+description: Definition of K8s node
+
+parameters:
+
+  ubuntu_1604_image:
+    type: string
+
+  k8s_vm_flavor:
+    type: string
+
+  oam_network:
+    type: string
+
+  oam_subnet:
+    type: string
+
+  onap_sg:
+    type: string
+
+  public_net_id:
+    type: string
+
+  key_name:
+    type: string
+
+  rancher_ip:
+    type: string
+
+resources:
+
+  name_nonce:
+    type: OS::Heat::RandomString
+    properties:
+      length: 4
+      sequence: lowercase
+
+  k8s_private_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: oam_network }
+      fixed_ips: [{"subnet": { get_param: oam_subnet }}]
+      security_groups:
+      - { get_param: onap_sg }
+
+  k8s_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: { get_param: public_net_id }
+      port_id: { get_resource: k8s_private_port }
+
+  k8s_vm:
+    type: OS::Nova::Server
+    properties:
+      name:
+        str_replace:
+          template: k8s-node-$NONCE
+          params:
+            $NONCE: { get_resource: name_nonce }
+      image: { get_param: ubuntu_1604_image }
+      flavor: { get_param: k8s_vm_flavor }
+      key_name: { get_param: key_name }
+      networks:
+      - port: { get_resource: k8s_private_port }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          params:
+            __rancher_ip_addr__: { get_param: rancher_ip }
+          template:
+            get_file: openstack-k8s-node.sh
+
+outputs:
+
+  k8s_vm_ip:
+    value: { get_attr: [k8s_floating_ip, fixed_ip_address] }

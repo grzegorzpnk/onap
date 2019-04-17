@@ -1,0 +1,156 @@
+heat_template_version: 2015-10-15
+description: ONAP Under-Cloud Setup (Kubernetes + Rancher)
+
+parameters:
+
+  ubuntu_1604_image:
+    type: string
+    description: Name of the Ubuntu 16.04 image
+
+  rancher_vm_flavor:
+    type: string
+    description: VM flavor for Rancher
+
+  k8s_vm_flavor:
+    type: string
+    description: VM flavor for k8s hosts
+
+  key_name:
+    type: string
+    description: SSH Key name used to access VMs
+
+  k8s_node_count:
+    type: number
+    description: Number of K8s nodes instances
+    default: 14
+
+  public_net_id:
+    type: string
+    description: ID of the external network
+
+  oam_network_cidr:
+    type: string
+
+resources:
+
+  random-str:
+    type: OS::Heat::RandomString
+    properties:
+      length: 4
+
+  # ONAP security group
+  onap_sg:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name:
+        str_replace:
+          template: base_rand
+          params:
+            base: onap_sg
+            rand: { get_resource: random-str }
+      description: security group used by ONAP
+      rules:
+        # All egress traffic
+        - direction: egress
+          ethertype: IPv4
+        - direction: egress
+          ethertype: IPv6
+        # ingress traffic
+        # ICMP
+        - protocol: icmp
+        - protocol: udp
+          port_range_min: 1
+          port_range_max: 65535
+        - protocol: tcp
+          port_range_min: 1
+          port_range_max: 65535
+
+  # ONAP management private network
+  oam_network:
+    type: OS::Neutron::Net
+    properties:
+      name:
+        str_replace:
+          template: oam_network_rand
+          params:
+            rand: { get_resource: random-str }
+
+  oam_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name:
+        str_replace:
+          template: oam_network_rand
+          params:
+            rand: { get_resource: random-str }
+      network_id: { get_resource: oam_network }
+      cidr: { get_param: oam_network_cidr }
+      dns_nameservers: [ "8.8.8.8" ]
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network: { get_param: public_net_id }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet_id: { get_resource: oam_subnet }
+
+  rancher_private_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: oam_network }
+      fixed_ips: [{"subnet": { get_resource: oam_subnet }}]
+      security_groups:
+      - { get_resource: onap_sg }
+
+  rancher_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: { get_param: public_net_id }
+      port_id: { get_resource: rancher_private_port }
+
+  rancher_vm:
+      type: OS::Nova::Server
+      properties:
+        name: Rancher-Server
+        image: { get_param: ubuntu_1604_image }
+        flavor: { get_param: rancher_vm_flavor }
+        key_name: { get_param: key_name }
+        networks:
+        - port: { get_resource: rancher_private_port }
+        user_data_format: RAW
+        user_data:
+          str_replace:
+            template:
+              get_file: openstack-rancher.sh
+            params:
+              __k8s_vm_ips__: { get_attr: [k8s_vms, k8s_vm_ip] }
+              __rancher_ip_addr__: { get_attr: [rancher_floating_ip, floating_ip_address] }
+              __rancher_private_ip_addr__: { get_attr: [rancher_floating_ip, fixed_ip_address] }
+
+  k8s_vms:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: k8s_node_count }
+      resource_def:
+        type: k8s-node.yaml
+        properties:
+          ubuntu_1604_image: { get_param: ubuntu_1604_image }
+          k8s_vm_flavor: { get_param: k8s_vm_flavor }
+          oam_network: { get_attr: [oam_network, name] }
+          oam_subnet: { get_attr: [oam_subnet, name] }
+          onap_sg: { get_resource: onap_sg }
+          public_net_id: { get_param: public_net_id }
+          key_name: { get_param: key_name }
+          rancher_ip: { get_attr: [rancher_floating_ip, fixed_ip_address] }
+
+outputs:
+  rancher_vm_ip:
+    description: The IP address of the rancher instance
+    value: { get_attr: [rancher_floating_ip, floating_ip_address] }
+  k8s_vm_ips:
+    value: { get_attr: [k8s_vms, k8s_vm_ip] }

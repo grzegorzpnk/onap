@@ -1,0 +1,204 @@
+# Copyright © 2017 Amdocs, Bell Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#################################################################
+# Global configuration defaults.
+#################################################################
+global: # global defaults
+  nodePortPrefix: 302
+  ubuntuInitRepository: registry.hub.docker.com
+  persistence: {}
+
+# application image
+repository: nexus3.onap.org:10001
+image: onap/testsuite:1.3.2
+pullPolicy: Always
+
+ubuntuInitImage: oomk8s/ubuntu-init:2.0.0
+
+# flag to enable debugging - application support required
+debugEnabled: false
+
+#################################################################
+# Application configuration defaults.
+#################################################################
+config:
+
+# openStackEncryptedPasswordHere should match the encrypted string used in SO and APPC and overridden per environment
+  openStackEncryptedPasswordHere: "caf228f59d7e5feec62818d6f1090aa7"
+
+# Demo configuration
+# Nexus demo artifact version.  Maps to GLOBAL_INJECTED_ARTIFACTS_VERSION
+demoArtifactsVersion: "1.3.0"
+# Nexus demo artifact URL.
+demoArtifactsRepoUrl: "https://nexus.onap.org/content/repositories/releases"
+# Openstack medium sized flavour name.  Maps GLOBAL_INJECTED_VM_FLAVOR
+openStackFlavourMedium: "m1.medium"
+# Openstack keystone URL.  Maps to GLOBAL_INJECTED_KEYSTONE
+openStackKeyStoneUrl: "http://192.168.186.11:5000"
+# UUID of the Openstack network that can assign floating ips.  Maps to GLOBAL_INJECTED_PUBLIC_NET_ID
+openStackPublicNetId: "6652cbfa-ee3d-40d1-bd45-02d1c123e4a2"
+# password for Openstack tenant where VNFs will be spawned.  Maps to GLOBAL_INJECTED_OPENSTACK_PASSWORD
+openStackPassword: "t6ygfr5"
+# Openstack region.  Maps to GLOBAL_INJECTED_REGION
+openStackRegion: "RegionOne"
+# Openstack tenant UUID where VNFs will be spawned. Maps to GLOBAL_INJECTED_OPENSTACK_TENANT_ID
+openStackTenantId: "fc6818a68bdc436097535699b808ece2"
+# username for Openstack tenant where VNFs will be spawned.  Maps to GLOBAL_INJECTED_OPENSTACK_USERNAME
+openStackUserName: "onap"
+# Project name of Openstack where VNFs will be spawned. Maps to GLOBAL_INJECTED_OPENSTACK_PROJECT_NAME
+openStackProjectName: "onap-casablanca-dev"
+# Domain id of openstack where VNFs will be deployed. Maps to GLOBAL_INJECTED_OPENSTACK_DOMAIN_ID
+openStackDomainId: "Default"
+# Openstack Keystone API version. Valid values are [ v2.0, v3 ]. Maps to GLOBAL_INJECTED_OPENSTACK_KEYSTONE_API_VERSION
+openStackKeystoneAPIVersion: "v2.0"
+# Openstack glance image name for Ubuntu 14.  Maps to GLOBAL_INJECTED_UBUNTU_1404_IMAGE
+ubuntu14Image: "ubuntu-14.04.4-server-cloudimg (20160217)"
+# Openstack glance image name for Ubuntu 16.  Maps to GLOBAL_INJECTED_UBUNTU_1604_IMAGE
+ubuntu16Image: "Ubuntu 16.04 LTS (Xenial Xerus) [20180126]"
+# GLOBAL_INJECTED_SCRIPT_VERSION.  Maps to GLOBAL_INJECTED_SCRIPT_VERSION
+scriptVersion: "1.3.0"
+# Openstack network to which VNFs will bind their primary (first) interface.  Maps to GLOBAL_INJECTED_NETWORK
+openStackPrivateNetId: "49911737-02ad-48b6-8400-3803b2b72843"
+# Openstack security group for instantiating VNFs
+openStackSecurityGroup: "onap_sg_rNES"
+# SDNC Preload configuration
+# Openstack subnet UUID for the network defined by openStackPrivateNetId.  Maps to onap_private_subnet_id
+openStackPrivateSubnetId: "c978ce96-de15-4ca6-8c65-26b827110df7"
+# CIDR notation for the Openstack private network where VNFs will be spawned.  Maps to onap_private_net_cidr
+openStackPrivateNetCidr: "10.0.0.0/16"
+# The first 2 octets of the private Openstack subnet where VNFs will be spawned.
+# Needed because sdnc preload templates hardcodes things like this 10.0.${ecompnet}.X
+openStackOamNetworkCidrPrefix: "10.0"
+# VID protocol/port until Selenium issue with SSL resolved
+# https/8443 vs http/8080
+vidServerProtocol:  "http"
+vidServerPort:  "8080"
+# Override with Pub Key for access to VNF
+vnfPubKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6KbTxfT368DNBzLyfTYJ0INI7mkRXc/xMpx349TXGBTQ06g2toN/p9OM188EGZd/qERRXcdnKY8lYULVIXZEoQbXTus2gTQWXy1zn5nhSkhste3L1uG+sjHySQHBj5NyOC32iNehRNu03bHi8XRBAOHZsXx6JpkltLXgWqQI91+h9i7I/4trpPyODtzz1DLIkbXv9woncwllKf4bmm+Bk6/OJKHuAlBdCLL5diZqODEZlKOyPPC9c07a835sskMgbscPrvBQigZFRNerjQlFXXCHjRwoBMvfS7kD7/R/K1fmSLtH0w4VEp5iwS9SIezgEeO2aDFPucmYG4MQDGzAz Generated-by-Nova"
+# Override with DCAE VES Collector external IP
+dcaeCollectorIp: ""
+
+# Credentials for ONAP Component
+# AAF
+aafUsername: "demo@people.osaaf.org"
+aafPassword: "demo123456!"
+# AAI
+aaiUsername: "aai@aai.onap.org"
+aaiPassword: "demo123456!"
+# APPC
+appcUsername: "appc@appc.onap.org"
+appcPassword: "demo123456!"
+# DCAE
+dcaeUsername: "console"
+dcaePassword: "ZjJkYjllMjljMTI2M2Iz"
+# DROOLS
+droolsUsername: "demo@people.osaaf.org"
+droolsPassword: "demo123456!"
+# POLICY
+policyAuth: "dGVzdHBkcDphbHBoYTEyMw=="
+policyClientAuth: "cHl0aG9uOnRlc3Q="
+policyUsername: "demo@people.osaaf.org"
+policyPassword: "demo123456!"
+# PORTAL
+portalUsername: "demo"
+portalPassword: "Kp8bJ4SXszM0WXlhak3eHlcse"
+# SO
+soUsername: "InfraPortalClient"
+soPassword: "password1$"
+soCatdbUsername: "bpel"
+soCatdbPassword: "password1$"
+# SDNC
+sdncUsername: "admin"
+sdncPassword: "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U"
+# VID
+vidUsername: "demo"
+vidPassword: "Kp8bJ4SXszM0WX"
+vidHealthUsername: "Default"
+vidHealthPassword: "AppPassword!1"
+
+
+# default number of instances
+replicaCount: 1
+
+nodeSelector: {}
+
+affinity: {}
+
+# Resource Limit flavor -By Default using small
+flavor: small
+# Segregation for Different environment (Small and Large)
+resources:
+  small:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  large:
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+  unlimited: {}
+
+# probe configuration parameters
+liveness:
+  initialDelaySeconds: 180
+  periodSeconds: 10
+  # necessary to disable liveness probe when setting breakpoints
+  # in debugger so K8s doesn't restart unresponsive container
+  enabled: true
+
+readiness:
+  initialDelaySeconds: 180
+  periodSeconds: 10
+
+service:
+  name: robot
+  type: NodePort
+  portName: httpd
+  externalPort: 88
+  internalPort: 88
+  nodePort: "09"
+
+ingress:
+  enabled: false
+
+## Persist data to a persitent volume
+persistence:
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+  volumeReclaimPolicy: Retain
+
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteMany
+  size: 2Gi
+  mountPath: /dockerdata-nfs
+  mountSubPath: robot/logs
+

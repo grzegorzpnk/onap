@@ -1,0 +1,276 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- https://wiki.onap.org/display/DW/Building+Entire+ONAP -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.onap</groupId>
+    <artifactId>org.onap</artifactId>
+
+    <version>1.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>onap.root</name>
+    <url>http://maven.apache.org</url>
+
+    <!-- 1.1.0/R1 specific (post Jun 2017) - current master 20170731 -->
+    <!-- 20171227 updated -->
+    <!-- note new repos are indented -->
+    <!-- mvn clean install -U  -DskipTests=true -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -->
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>aai/logging-service</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>License.txt</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--copy file="aai/logging-service/License.txt" tofile="License.txt"/-->
+    <modules>
+        <module>oparent</module>
+
+        <!-- AAF -->
+        <!--<module>aaf/authz</module>-->
+        <!--<module>aaf/cadi</module>-->
+        <!--<module>aaf/inno</module>-->
+        <!--<module>aaf/luaplugin</module>-->
+
+        <!-- AAI -->
+        <!--<module>aai/aai-common</module>--> <!-- needs yang exclude -->
+        <!--module>aai/aai-data</module--> <!-- chef cookbooks only -->
+        <!--module>aai/aai-config</module--> <!-- chef cookbooks only -->
+        <!--module>aai/babel</module--> <!-- empty -->
+        <!--<module>aai/champ</module>-->
+        <!--module>aai/gizmo</module--> <!-- empty -->
+        <!-- not compiling - deprecated lists.onap.org/pipermail/onap-discuss/2017-November/006191.html -->
+        <!--module>aai/aai-service</module-->
+        <!--<module>aai/data-router</module>-->
+        <!--<module>aai/logging-service</module> &lt;!&ndash; AAI-568 &ndash;&gt;-->
+        <!--<module>aai/model-loader</module>-->
+        <!--<module>aai/rest-client</module> &lt;!&ndash; include the onap staging nexus repo for common-logging:jar:1.0.0, org.openecomp.aai.logging-service:eelf-logging:jar:1.0.0, org.openecomp.aai.logging-service:logging-api:jar:1.0.0 &ndash;&gt;-->
+        <!--<module>aai/router-core</module>-->
+        <!--<module>aai/search-data-service</module>-->
+        <!--<module>aai/sparky-be</module>-->
+        <!--<module>aai/sparky-fe</module>-->
+        <!--module>aai/test-config</module--> <!-- no pom -->
+        <!--<module>aai/traversal</module>-->
+
+        <!-- APP-C -->
+        <module>appc</module>
+        <module>appc/deployment</module> <!-- manual override input required -->
+
+        <!-- CCSDK -->
+        <!-- ccsdk in common with sdnc -->
+        <module>ccsdk/parent</module>
+        <module>ccsdk/dashboard</module>
+        <module>ccsdk/distribution</module>
+        <module>ccsdk/sli/adaptors</module>
+        <module>ccsdk/sli/core</module>
+        <module>ccsdk/sli/northbound</module>
+        <module>ccsdk/sli/plugins</module>
+        <module>ccsdk/storage/esaas</module>
+        <module>ccsdk/storage/pgaas</module>
+        <module>ccsdk/platform/blueprints</module>
+        <module>ccsdk/platform/nbapi</module>
+        <module>ccsdk/platform/plugins</module>
+        <module>ccsdk/utils</module>
+
+        <!-- CI -->
+        <!--module>ci-management</module--> <!-- jenkins infrastructure -->
+        <!-- requires docker daemon running -->
+
+        <!-- CLAMP -->
+        <!--module>clamp</module--> <!-- CLAMP-99 -->
+
+        <!-- CLI -->
+        <!--<module>cli</module>-->
+
+        <!-- DCAE -->
+        <!--<module>dcaegen2/analytics</module>-->
+        <!--<module>dcaegen2/analytics/tca</module>-->
+        <!--<module>dcaegen2/collectors</module>-->
+        <!--<module>dcaegen2/collectors/snmptrap</module>-->
+        <!--<module>dcaegen2/collectors/ves</module>-->
+        <!--<module>dcaegen2/deployments</module>-->
+        <!--<module>dcaegen2/platform</module>-->
+        <!--<module>dcaegen2/platform/blueprints</module>-->
+        <!--<module>dcaegen2/platform/cli</module>-->
+        <!--<module>dcaegen2/platform/configbinding</module>-->
+        <!--<module>dcaegen2/platform/deployment-handler</module>-->
+        <!--<module>dcaegen2/platform/inventory-api</module>-->
+        <!--<module>dcaegen2/platform/plugins</module>-->
+        <!--<module>dcaegen2/platform/policy-handler</module>-->
+        <!--<module>dcaegen2/platform/registrator</module>-->
+        <!--<module>dcaegen2/platform/servicechange-handler</module>-->
+        <!--<module>dcaegen2/utils</module>-->
+
+        <!-- DMaaP -->
+        <!--<module>dmaap/buscontroller</module>-->
+        <!--<module>dmaap/datarouter</module--> <!-- datarouter-prov error - DMAAP-201 -->
+        <!--<module>dmaap/dbcapi</module>-->
+        <!--<module>dmaap/messagerouter/dmaapclient</module>-->
+        <!--<module>dmaap/messagerouter/messageservice</module>-->
+        <!--<module>dmaap/messagerouter/mirroragent</module>-->
+        <!--<module>dmaap/messagerouter/msgrtr</module>-->
+
+        <!-- NBI -->
+        <!--module>externalapi/nbi</module--> <!-- empty -->
+
+        <!-- Holmes (part of DCAE) -->
+        <!--<module>holmes/common</module>-->
+        <!--<module>holmes/dsa</module>-->
+        <!--<module>holmes/engine-management</module>-->
+        <!--<module>holmes/rule-management</module>-->
+
+        <!-- Integration -->
+        <!--module>integration</module-->
+
+        <!-- Logging -->
+        <!--<module>logging-analytics</module>-->
+
+        <!-- Modelling -->
+        <!--module>modeling/toscaparsers</module>-->
+        <!--<module>modeling/yangvalidators</module>-->
+
+        <!-- MSB -->
+        <!--<module>msb/apigateway</module>-->
+        <!--<module>msb/discovery</module>-->
+        <!--<module>msb/java-sdk</module>-->
+        <!--<module>msb/swagger-sdk</module>-->
+
+        <!-- MultiCloud -->
+        <!--module>multicloud/azure</module--> <!-- empty -->
+        <!--<module>multicloud/framework</module>-->
+        <!--<module>multicloud/openstack</module>-->
+        <!--<module>multicloud/openstack/vmware</module>-->
+        <!--module>multicloud/openstack/kilo</module--> <!-- MULTICLOUD-134 parent pom is 1.1.0 not 1.2.0 -->
+
+        <!-- OOF (need to be updated) -->
+        <!--module>optf/cmso</module>
+        <module>optf/has</module>
+        <module>optf/osdf</module-->
+
+        <!-- DEMO -->
+        <!--module>demo</module--> <!-- error in parent refs in sample_plugin -->
+
+        <!-- OOM -->
+        <!-- oom is an infrastructure project -->
+        <!--module>oom</module-->
+
+        <!-- POLICY -->
+        <!--<module>policy/api</module>-->
+        <!--<module>policy/gui</module>-->
+        <!--<module>policy/pap</module>-->
+        <!--<module>policy/pdp</module>-->
+        <!--<module>policy/common</module>-->
+        <!--<module>policy/docker</module>-->
+        <!--<module>policy/drools-applications</module>-->
+        <!--<module>policy/drools-pdp</module>-->
+        <!--<module>policy/engine</module>-->
+
+        <!-- PORTAL -->
+        <!-- locked see portal/sdk -->
+        <!--module>ecompsdkos/ecomp-sdk</module-->
+        <!--module>portal/ecomp-portal-FE-common</module--> <!-- parent not referenced -->
+        <!--<module>portal</module>-->
+        <!--<module>portal/sdk/ecomp-sdk</module>-->
+
+        <!-- SDC -->
+        <!--module>sdc</module--> <!-- breakout root project--><!-- in catalog-be org/openrdf/sesame/sesame-rio-rdfjson/2.7.10/sesame-rio-rdfjson-2.7.10.jar; error in opening zip file-->
+        <!-- in onboarding-ui-war of sdc/openecomp-ui onboarding-fe: Process: /tmp/nodejs/node-v7.5.0-darwin-x64/bin/node /tmp/nodejs/node_modules/webpack/bin/webpack terminated with 255-->
+        <!--<module>sdc/security-utils</module>-->
+        <!--<module>sdc/common-app-api</module>-->
+        <!--<module>sdc/common-be</module>-->
+        <!--<module>sdc/catalog-dao</module>-->
+        <!--<module>sdc/catalog-model</module>-->
+        <!--<module>sdc/catalog-be</module>-->
+        <!--<module>sdc/asdctool</module>-->
+        <!--<module>sdc/catalog-ui</module>-->
+        <!--<module>sdc/catalog-fe</module>-->
+        <!--<module>sdc/asdc-tests</module>-->
+        <!--module>sdc/ui-ci</module-->
+        <!--<module>sdc/openecomp-be</module>-->
+        <!--module>sdc/openecomp-ui</module--> <!--onboarding-fe: Process: /tmp/nodejs/node-v7.5.0-darwin-x64/bin/node /tmp/nodejs/node_modules/webpack/bin/webpack terminated with 255-->
+        <!--<module>sdc/sdc-os-chef</module>-->
+        <!--<module>sdc/jtosca</module>-->
+        <!--<module>sdc/sdc-tosca</module>-->
+        <!--module>sdc/sdc-docker-base</module-->
+        <!--<module>sdc/sdc-distribution-client</module>-->
+        <!--module>sdc/sdc-workflow-designer</module-->
+        <!--module>sdc/sdc-vnfdesign</module-->
+        <!-- deleted -->
+        <!--module>sdc/sdc_common</module-->
+
+        <!-- SDN-C -->
+        <module>sdnc/adaptors</module> <!-- sdnc/sli/aai/AAIClient.java:30  in sdnc/core/sliPluginUtils-->
+        <module>sdnc/core</module> <!-- Felix issues in sdnc/core/slapi/provider  and sdnc/core/sli/provider-->
+        <module>sdnc/northbound</module> <!-- package org.opendaylight.controller.config.spi na -->
+        <module>sdnc/oam</module>
+        <module>sdnc/plugins</module><!-- package org.codehaus.jettison.json does not exist -->
+
+        <!-- SO -->
+        <!--<module>so</module>-->
+
+        <!-- UI -->
+        <!--<module>ui/dmaapbc</module>-->
+        <!--module>usecase-ui</module-->
+
+        <!-- VID -->
+        <!--<module>vid</module>-->
+
+        <!-- VFC -->
+        <!--<module>vfc/gvnfm/vnflcm</module>-->
+        <!--<module>vfc/gvnfm/vnfmgr</module>-->
+        <!--<module>vfc/gvnfm/vnfres</module>-->
+        <!--<module>vfc/nfvo/catalog</module>-->
+        <!--<module>vfc/nfvo/driver/ems</module>-->
+        <!--<module>vfc/nfvo/driver/sfc</module>-->
+        <!--<module>vfc/nfvo/driver/sfc/zte/sfc-driver</module>-->
+        <!--<module>vfc/nfvo/driver/vnfm/gvnfm</module>-->
+        <!--<module>vfc/nfvo/driver/vnfm/svnfm</module>-->
+        <!--<module>vfc/nfvo/lcm</module>-->
+        <!--<module>vfc/nfvo/resmanagement</module>-->
+        <!--<module>vfc/nfvo/wfengine</module>-->
+        <!--module>vfc/nfvo/wfengine/wso2</module--> <!-- VFC-628 -->
+        <!--<module>vfc/nfvo/wfengine/activiti-extension</module>-->
+        <!--<module>vfc/nfvo/wfengine/wfenginemgrservice</module>-->
+
+        <!-- VNFSDK -->
+        <!--module>vnfsdk/functest</module--> <!-- VNFSDK-139 -->
+        <!-- vvp errors are missing nexus3 secret - VVP-41 -->
+        <!--<module>vnfsdk/lctest</module>-->
+        <!--module>vnfsdk/refrepo</module-->
+        <!--<module>vnfsdk/validation</module>-->
+
+        <!-- VVP -->
+        <!--module>vvp/cms</module--> <!-- -->
+        <!--module>vvp/engagementmgr</module-->
+        <!--<module>vvp/gitlab</module>-->
+        <!--module>vvp/image-scanner</module-->
+        <!--module>vvp/jenkins</module-->
+        <!--module>vvp/portal</module-->
+        <!--module>vvp/postgresql</module-->
+        <!--module>vvp/test-engine</module-->
+    </modules>
+</project>
